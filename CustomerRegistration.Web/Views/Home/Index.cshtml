@@ -1,31 +1,107 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model CustomerRegistration.Web.Models.CustomerVM
+@{
+	ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<div id="contact" class="form">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<h2>Registration</h2>
+				
+			</div> <!-- end of col -->
+		</div> <!-- end of row -->
+		<div class="row">
+			<div class="col-lg-8 offset-lg-2">
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+				<!-- Contact Form -->
+
+				<form action="/Home/Index" method="post">
+					@Html.AntiForgeryToken()
+					@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+					@Html.ValidationMessage("expired", new { @class = "text-danger" })
+					@Html.ValidationMessage("CaptchaFail", new { @class = "text-danger" })
+
+					<div class="form-group">
+						@Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "required" })
+						@Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+						@Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+					</div>
+
+					<div class="form-group">
+						@Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "required" })
+						@Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+						@Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+					</div>
+
+					<div class="form-group">
+						@Html.LabelFor(model => model.Message, htmlAttributes: new { @class = "required" })
+						@Html.EditorFor(model => model.Message, new { htmlAttributes = new { @class = "form-control" } })
+						@Html.ValidationMessageFor(model => model.Message, "", new { @class = "text-danger" })
+					</div>
+
+
+					@Html.CheckBoxFor(model => model.IsTermsAccepted, new { htmlAttributes = new { @class = "form-control" } })
+					@Html.LabelFor(model => model.IsTermsAccepted, htmlAttributes: new { @class = "required" })
+					@Html.ActionLink("Privacy Policy", "PrivacyPolicy", "Home", new { target = "_blank" })
+					@Html.ValidationMessageFor(model => model.IsTermsAccepted, "", new { @class = "text-danger" })
+
+
+					<div class="form-group">
+						<button type="submit" class="form-control-submit-button">SUBMIT MESSAGE</button>
+					</div>
+					<div class="form-message">
+						<div id="cmsgSubmit" class="h3 text-center hidden"></div>
+					</div>
+				</form>
+				<!-- end of contact form -->
+
+			</div> <!-- end of col -->
+		</div> <!-- end of row -->
+	</div> <!-- end of container -->
+</div> <!-- end of form -->
+
+@section scripts{
+
+	<script src="https://www.google.com/recaptcha/api.js?render=recaptchaSiteKe"></script>
+	<script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.js"></script>
+	<script src="//ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.js"></script>
+
+	<script>
+
+
+
+		// extend range validator method to treat checkboxes differently
+		var defaultRangeValidator = $.validator.methods.range;
+		$.validator.methods.range = function (value, element, param) {
+			if (element.type === 'checkbox') {
+				// if it's a checkbox return true if it is checked
+				return element.checked;
+			} else {
+				// otherwise run the default validation function
+				return defaultRangeValidator.call(this, value, element, param);
+			}
+		}
+
+
+
+		grecaptcha.ready(function () {
+			grecaptcha.execute('recaptchaSiteKe', { action: 'homepage' }).then(function (token) {
+				$.ajax({
+					type: "GET",
+					url: "/Home/SetToken",
+					data: { _token: token },
+					contentType: "application/json; charset=utf-8",
+
+					success: function (response) {
+						console.log('Passed the token successfully');
+					},
+					failure: function (response) {
+						alert(response.d);
+					}
+				});
+			});
+		});
+	</script>
+
+}
