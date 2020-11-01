@@ -26,7 +26,7 @@ namespace CustomerRegistration.Web.Controllers
 
 		public ActionResult Index()
 		{
-			log.Error("Customer Web Service Solution Application started");
+			log.Info("Customer Web Service Solution Application started");
 			return View();
 		}
 		public ActionResult PrivacyPolicy()
