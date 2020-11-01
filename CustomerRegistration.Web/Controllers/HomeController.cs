@@ -1,5 +1,6 @@
 ﻿using CustomerRegistration.Web.Helper;
 using CustomerRegistration.Web.Models;
+using log4net;
 using Newtonsoft.Json;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -13,6 +14,8 @@ namespace CustomerRegistration.Web.Controllers
 {
 	public class HomeController : Controller
 	{
+		private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 
 		public string SetToken(string _token)
 		{
@@ -23,6 +26,7 @@ namespace CustomerRegistration.Web.Controllers
 
 		public ActionResult Index()
 		{
+			log.Error("Customer Web Service Solution Application started");
 			return View();
 		}
 		public ActionResult PrivacyPolicy()
@@ -86,7 +90,7 @@ namespace CustomerRegistration.Web.Controllers
 			}
 			catch (Exception ex)
 			{
-				throw ex;
+				log.Error("Error Sending to email.", ex);
 			}
 
 		}
