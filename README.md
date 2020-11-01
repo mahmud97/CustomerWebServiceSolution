@@ -1,0 +1,1 @@
+- In order to make workable sendgrid,recaptcha,log4net one has to add value in web.config of clientregistration.web
